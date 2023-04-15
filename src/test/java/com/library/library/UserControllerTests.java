@@ -41,4 +41,28 @@ public class UserControllerTests {
         assert response.getBody() != null;
         assert response.getBody().getName().equals("ion");
     }
+    @Test
+    void testGetAllUsers(){
+        List<User> users = new ArrayList<>();
+        users.add(new User("ion"));
+        users.add(new User("ion1"));
+        when(userRepository.findAll()).thenReturn(users);
+        ResponseEntity<List<User>> response = userController.getAllUsers();
+        verify(userRepository, times(1)).findAll();
+        assert response.getStatusCode() == HttpStatus.OK;
+        assert response.getBody() != null;
+        assert response.getBody().size() == 2;
+    }
+    @Test
+    void testGetUserById() {
+        User person = new User("ion");
+        person.setId(1L);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(person));
+        ResponseEntity<User> response = userController.getUserById(1L);
+        verify(userRepository, times(1)).findById(1L);
+        assert response.getStatusCode() == HttpStatus.OK;
+        assert response.getBody() != null;
+        assert response.getBody().getId() == 1L;
+        assert response.getBody().getName().equals("ion");
+    }
 }

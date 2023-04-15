@@ -22,4 +22,15 @@ public class UserController {
         User user1 = userRepository.save(new User(u.getName()));
         return new ResponseEntity<>(user1, HttpStatus.CREATED);
     }
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers(){
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") long id){
+        Optional<User> user = userRepository.findById(id);
+        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+    }
 }
