@@ -33,4 +33,11 @@ public class UserController {
         Optional<User> user = userRepository.findById(id);
         return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user1){
+        Optional<User> user = userRepository.findById(id);
+        User u1 = user.get();
+        u1.setName(user1.getName());
+        return new ResponseEntity<>(userRepository.save(u1), HttpStatus.OK);
+    }
 }

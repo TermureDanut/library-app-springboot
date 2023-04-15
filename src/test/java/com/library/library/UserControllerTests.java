@@ -65,4 +65,19 @@ public class UserControllerTests {
         assert response.getBody().getId() == 1L;
         assert response.getBody().getName().equals("ion");
     }
+    @Test
+    public void testUpdateUser() {
+        User u = new User();
+        u.setId(1L);
+        u.setName("ion");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(u));
+        when(userRepository.save(any(User.class))).thenReturn(u);
+        User updatedUser = new User();
+        updatedUser.setName("ion1");
+        ResponseEntity<User> response = userController.updateUser(1L, updatedUser);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("ion1", response.getBody().getName());
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).save(u);
+    }
 }
