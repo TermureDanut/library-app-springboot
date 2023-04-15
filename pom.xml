@@ -19,13 +19,17 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>		<!-- includes all the dependecies needed for springboot -->
+			<artifactId>spring-boot-starter-web</artifactId>				<!-- includes all the dependecies needed for springboot -->
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>		<!-- includes all the dependecies needed for springboot testing -->
+			<artifactId>spring-boot-starter-test</artifactId>				<!-- includes all the dependecies needed for springboot testing -->
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>			<!-- includes all the dependecies needed for creating entities -->
 		</dependency>
 	</dependencies>
 
