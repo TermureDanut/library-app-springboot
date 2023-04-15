@@ -31,6 +31,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>			<!-- includes all the dependecies needed for creating entities -->
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>								<!-- includes the JDBC driver for PostgreSQL -->
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
