@@ -80,4 +80,22 @@ public class UserControllerTests {
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).save(u);
     }
+    @Test
+    void testDeleteAllUsers() {
+        doNothing().when(userRepository).deleteAll();
+        ResponseEntity<HttpStatus> response = userController.deleteAllUsers();
+        verify(userRepository, times(1)).deleteAll();
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+    @Test
+    void testDeleteUserById() {
+        long id = 1L;
+        doNothing().when(userRepository).deleteById(id);
+        ResponseEntity<HttpStatus> response = userController.deleteUserById(id);
+        verify(userRepository, times(1)).deleteById(id);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
 }

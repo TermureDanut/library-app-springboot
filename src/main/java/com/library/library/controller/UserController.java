@@ -40,4 +40,14 @@ public class UserController {
         u1.setName(user1.getName());
         return new ResponseEntity<>(userRepository.save(u1), HttpStatus.OK);
     }
+    @DeleteMapping("/users")
+    public ResponseEntity<HttpStatus> deleteAllUsers(){
+        userRepository.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<HttpStatus> deleteUserById(@PathVariable("id") long id){
+        userRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
