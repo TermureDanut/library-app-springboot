@@ -33,7 +33,7 @@ public class UserControllerTests {
     }
     @Test
     void testCreateUser() {
-        User user = new User("ion");
+        User user = new User("ion", "email");
         when(userRepository.save(any(User.class))).thenReturn(user);
         ResponseEntity<User> response = userController.createUser(user);
         verify(userRepository, times(1)).save(any(User.class));
@@ -44,8 +44,8 @@ public class UserControllerTests {
     @Test
     void testGetAllUsers(){
         List<User> users = new ArrayList<>();
-        users.add(new User("ion"));
-        users.add(new User("ion1"));
+        users.add(new User("ion", "email"));
+        users.add(new User("ion", "email"));
         when(userRepository.findAll()).thenReturn(users);
         ResponseEntity<List<User>> response = userController.getAllUsers();
         verify(userRepository, times(1)).findAll();
@@ -55,7 +55,7 @@ public class UserControllerTests {
     }
     @Test
     void testGetUserById() {
-        User person = new User("ion");
+        User person = new User("ion", "email");
         person.setId(1L);
         when(userRepository.findById(1L)).thenReturn(Optional.of(person));
         ResponseEntity<User> response = userController.getUserById(1L);
@@ -85,17 +85,29 @@ public class UserControllerTests {
         doNothing().when(userRepository).deleteAll();
         ResponseEntity<HttpStatus> response = userController.deleteAllUsers();
         verify(userRepository, times(1)).deleteAll();
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
     }
     @Test
     void testDeleteUserById() {
-        long id = 1L;
-        doNothing().when(userRepository).deleteById(id);
-        ResponseEntity<HttpStatus> response = userController.deleteUserById(id);
-        verify(userRepository, times(1)).deleteById(id);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertNull(response.getBody());
+        long userId = 1L;
+        User user = new User("ion", "email");
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        doNothing().when(userRepository).deleteById(userId);
+        ResponseEntity<HttpStatus> responseEntity = userController.deleteUserById(userId);
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).deleteById(userId);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void testDeleteUserById_UserNotFound() {
+        long userId = 1L;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        ResponseEntity<HttpStatus> responseEntity = userController.deleteUserById(userId);
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, never()).deleteById(userId);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
 }
