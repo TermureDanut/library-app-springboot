@@ -10,9 +10,16 @@ public class User {
     private long id;
     @Column
     private String name;
-    public User(){}
-    public User(String name){
+    @Column
+    private String email;
+    public User(){
+        this.id = 0;
+        this.name = "";
+        this.email = "";
+    }
+    public User(String name, String email){
         this.name = name;
+        this.email = email;
     }
     public long getId() {
         return id;
@@ -26,8 +33,14 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name='" + name + '\'' + '}';
+        return "User{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + '}';
     }
 }
