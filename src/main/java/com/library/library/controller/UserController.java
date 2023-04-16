@@ -26,16 +26,25 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers(){
         List<User> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
+        if (users.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") long id){
         Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user1){
         Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         User u1 = user.get();
         u1.setName(user1.getName());
         return new ResponseEntity<>(userRepository.save(u1), HttpStatus.OK);
@@ -43,11 +52,15 @@ public class UserController {
     @DeleteMapping("/users")
     public ResponseEntity<HttpStatus> deleteAllUsers(){
         userRepository.deleteAll();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/users/{id}")
     public ResponseEntity<HttpStatus> deleteUserById(@PathVariable("id") long id){
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         userRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
