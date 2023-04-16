@@ -3,13 +3,15 @@ package com.library.library.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "authors")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Column
     private String fullName;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     public Author(){
         this.id = 0;
         this.fullName = "";
