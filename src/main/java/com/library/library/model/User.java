@@ -8,14 +8,12 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
     private long id;
     @Column
     private String name;
     @Column
     private String email;
-    @OneToMany(mappedBy = "user")
-    private List<Author> authorList;
     public User(){}
     public User(String name, String email){
         this.name = name;
