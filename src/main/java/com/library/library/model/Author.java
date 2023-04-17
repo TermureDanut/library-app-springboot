@@ -12,10 +12,7 @@ public class Author {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    public Author(){
-        this.id = 0;
-        this.fullName = "";
-    }
+    public Author(){}
     public Author(String fullName){
         this.fullName = fullName;
     }
