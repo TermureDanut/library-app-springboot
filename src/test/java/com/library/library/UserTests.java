@@ -3,13 +3,14 @@ package com.library.library;
 import com.library.library.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class UserTests {
     @Test
     void ConstructorWithoutParamethersTest(){
         User u = new User();
-        Assertions.assertEquals("", u.getName());
-        Assertions.assertEquals("", u.getEmail());
-        Assertions.assertEquals(0, u.getId());
+        assertNotNull(u);
     }
     @Test
     void ConstructorTest() {

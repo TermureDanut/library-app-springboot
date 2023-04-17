@@ -16,11 +16,7 @@ public class User {
     private String email;
     @OneToMany(mappedBy = "user")
     private List<Author> authorList;
-    public User(){
-        this.id = 0;
-        this.name = "";
-        this.email = "";
-    }
+    public User(){}
     public User(String name, String email){
         this.name = name;
         this.email = email;
