@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,7 +81,7 @@ public class AuthorControllerTests {
         verify(authorRepository).findByUserId(userId);
     }
     @Test
-    public void TestUpdateAuthor_authorFound() {
+    public void TestUpdateAuthor() {
         long authorId = 1L;
         Author authorRequest = new Author();
         authorRequest.setFullName("ion");
@@ -97,5 +98,30 @@ public class AuthorControllerTests {
         verify(authorRepository).findById(authorId);
         verify(authorRepository).save(existingAuthor);
         assertEquals(authorRequest.getFullName(), existingAuthor.getFullName());
+    }
+    @Test
+    public void TestDeleteAuthor() {
+        long authorId = 1L;
+        Author existingAuthor = new Author();
+        existingAuthor.setId(authorId);
+        existingAuthor.setFullName("ion");
+        when(authorRepository.existsById(authorId)).thenReturn(true);
+        ResponseEntity<HttpStatus> response = authorController.deleteAuthor(authorId);
+        assertNotNull(response);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(authorRepository).existsById(authorId);
+        verify(authorRepository).deleteById(authorId);
+    }
+    @Test
+    public void TestDeleteAllAuthorsOfUser() {
+        long userId = 1L;
+        when(userRepository.existsById(userId)).thenReturn(true);
+        ResponseEntity<List<Author>> response = authorController.deleteAllAuthorsOfUser(userId);
+        assertNotNull(response);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(userRepository).existsById(userId);
+        verify(authorRepository).deleteByUserId(userId);
     }
 }

@@ -60,4 +60,17 @@ public class AuthorController {
         a1.setFullName(authorRequest.getFullName());
         return new ResponseEntity<>(authorRepository.save(a1), HttpStatus.OK);
     }
+    @DeleteMapping("/authors/{id}")
+    public ResponseEntity<HttpStatus> deleteAuthor(@PathVariable("id") long id) {
+        authorRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @DeleteMapping("/users/{userId}/authors")
+    public ResponseEntity<List<Author>> deleteAllAuthorsOfUser(@PathVariable(value = "userId") Long userId) {
+        if (!userRepository.existsById(userId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        authorRepository.deleteByUserId(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
