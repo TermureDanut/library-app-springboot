@@ -34,4 +34,20 @@ public class AuthorController {
         }
         return new ResponseEntity<>(a, HttpStatus.CREATED);
     }
+    @GetMapping("/authors/{id}")
+    public ResponseEntity<Author> getAuthorsById(@PathVariable(value = "id") Long id) {
+        Optional<Author> a = authorRepository.findById(id);
+        if (!a.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(a.get(), HttpStatus.OK);
+    }
+    @GetMapping("/users/{userId}/authors")
+    public ResponseEntity<List<Author>> getAllAuthorsByUserId(@PathVariable(value = "userId") Long userId) {
+        if (!userRepository.existsById(userId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Author> authors = authorRepository.findByUserId(userId);
+        return new ResponseEntity<>(authors, HttpStatus.OK);
+    }
 }
