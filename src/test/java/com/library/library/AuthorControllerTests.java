@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -77,5 +78,24 @@ public class AuthorControllerTests {
         assertEquals(authors, response.getBody());
         verify(userRepository).existsById(userId);
         verify(authorRepository).findByUserId(userId);
+    }
+    @Test
+    public void TestUpdateAuthor_authorFound() {
+        long authorId = 1L;
+        Author authorRequest = new Author();
+        authorRequest.setFullName("ion");
+        Author existingAuthor = new Author();
+        existingAuthor.setId(authorId);
+        existingAuthor.setFullName("ioana");
+        when(authorRepository.findById(authorId)).thenReturn(Optional.of(existingAuthor));
+        when(authorRepository.save(any(Author.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        ResponseEntity<Author> response = authorController.updateAuthor(authorId, authorRequest);
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(authorRequest.getFullName(), response.getBody().getFullName());
+        verify(authorRepository).findById(authorId);
+        verify(authorRepository).save(existingAuthor);
+        assertEquals(authorRequest.getFullName(), existingAuthor.getFullName());
     }
 }

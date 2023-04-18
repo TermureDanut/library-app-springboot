@@ -50,4 +50,14 @@ public class AuthorController {
         List<Author> authors = authorRepository.findByUserId(userId);
         return new ResponseEntity<>(authors, HttpStatus.OK);
     }
+    @PutMapping("/author/{id}")
+    public ResponseEntity<Author> updateAuthor(@PathVariable("id") long id, @RequestBody Author authorRequest) {
+        Optional<Author> a = authorRepository.findById(id);
+        if (!a.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Author a1 = a.get();
+        a1.setFullName(authorRequest.getFullName());
+        return new ResponseEntity<>(authorRepository.save(a1), HttpStatus.OK);
+    }
 }
