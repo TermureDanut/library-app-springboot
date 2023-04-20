@@ -12,4 +12,5 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     List<Author> findByUserId(long id);
     @Transactional
     void deleteByUserId(long id);
+    List<Author> findAuthorByBooksId(Long bookId);
 }

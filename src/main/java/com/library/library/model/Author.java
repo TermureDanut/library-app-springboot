@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "authors")
 public class Author {
@@ -18,6 +21,9 @@ public class Author {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User user;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "authors_books", joinColumns = { @JoinColumn(name = "author_id") }, inverseJoinColumns = { @JoinColumn(name = "book_id") })
+    private Set<Book> books = new HashSet<>();
     public Author(){}
     public Author(String fullName){
         this.fullName = fullName;
@@ -40,8 +46,16 @@ public class Author {
     public void setUser(User user) {
         this.user = user;
     }
-    @Override
-    public String toString() {
-        return "Author{" + "id=" + id + ", fullName='" + fullName + '\'' + '}';
+    public void addBook(Book book) {
+        this.books.add(book);
+        book.getAuthors().add(this);
+    }
+
+    public void removeBook(long bookId) {
+        Book book = this.books.stream().filter(b -> b.getId() == bookId).findFirst().orElse(null);
+        if (book != null) {
+            this.books.remove(book);
+            book.getAuthors().remove(this);
+        }
     }
 }
