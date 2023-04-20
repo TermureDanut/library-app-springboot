@@ -60,6 +60,5 @@ public class AuthorService {
         if (userRepository.existsById(userId)) {
             authorRepository.deleteByUserId(userId);
         }
-
     }
 }
