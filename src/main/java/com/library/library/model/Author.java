@@ -50,6 +50,9 @@ public class Author {
         this.books.add(book);
         book.getAuthors().add(this);
     }
+    public Set<Book> getBooks() {
+        return books;
+    }
 
     public void removeBook(long bookId) {
         Book book = this.books.stream().filter(b -> b.getId() == bookId).findFirst().orElse(null);
