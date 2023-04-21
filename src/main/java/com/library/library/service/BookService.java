@@ -85,4 +85,12 @@ public class BookService {
         book.setBookName(bookRequest.getBookName());
         return book;
     }
+    public void deleteBookFromAuthor(Long authorId, Long bookId) {
+        Author author = authorRepository.findById(authorId).orElse(null);
+        author.removeBook(bookId);
+        authorRepository.save(author);
+    }
+    public void deleteBook(long id) {
+        bookRepository.deleteById(id);
+    }
 }

@@ -1,7 +1,6 @@
 package com.library.library;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -124,5 +123,22 @@ public class BookServiceTests {
         assertNotNull(result);
         assertEquals(id, result.getId());
         assertEquals("Updated Book", result.getBookName());
+    }
+    @Test
+    public void testDeleteBookFromAuthor() {
+        Author author = new Author();
+        Book book = new Book();
+        book.setId(1L);
+        author.addBook(book);
+        when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
+        bookService.deleteBookFromAuthor(1L, 1L);
+        assertFalse(author.getBooks().contains(book));
+        verify(authorRepository, times(1)).save(author);
+    }
+    @Test
+    public void deleteBookById() {
+        long bookId = 12345L;
+        bookService.deleteBook(bookId);
+        verify(bookRepository, times(1)).deleteById(bookId);
     }
 }
