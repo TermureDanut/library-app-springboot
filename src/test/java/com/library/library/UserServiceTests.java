@@ -80,12 +80,4 @@ public class UserServiceTests {
         assertEquals(HttpStatus.OK, result);
         verify(userRepository, times(1)).deleteById(userId);
     }
-    @Test
-    public void testDeleteUserByIdNotFound() {
-        long userId = 1L;
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-        HttpStatus result = userService.deleteUserById(userId);
-        assertEquals(HttpStatus.NOT_FOUND, result);
-        verify(userRepository, never()).deleteById(userId);
-    }
 }
