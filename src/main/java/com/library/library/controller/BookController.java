@@ -77,4 +77,14 @@ public class BookController {
         }
         return new ResponseEntity<>(bookRepository.save(book), HttpStatus.OK);
     }
+    @DeleteMapping("/authors/{authorId}/books/{bookId}")
+    public ResponseEntity<HttpStatus> deleteBookFromAuthor(@PathVariable(value = "authorId") Long authorId, @PathVariable(value = "bookId") Long bookId) {
+        bookService.deleteBookFromAuthor(authorId, bookId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @DeleteMapping("/books/{id}")
+    public ResponseEntity<HttpStatus> deleteBook(@PathVariable("id") long id) {
+        bookService.deleteBook(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
