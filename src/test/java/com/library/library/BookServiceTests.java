@@ -111,4 +111,18 @@ public class BookServiceTests {
             assertEquals(expectedAuthor.getFullName(), actualAuthor.getFullName());
         }
     }
+    @Test
+    public void testUpdateBook() {
+        Long id = 1L;
+        Book existingBook = new Book("Test Book");
+        existingBook.setId(id);
+        Book updatedBook = new Book("Updated Book");
+        updatedBook.setId(id);
+        when(bookRepository.findById(id)).thenReturn(Optional.of(existingBook));
+        when(bookRepository.save(existingBook)).thenReturn(existingBook);
+        Book result = bookService.updateBook(id, updatedBook);
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals("Updated Book", result.getBookName());
+    }
 }

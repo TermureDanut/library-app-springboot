@@ -77,4 +77,12 @@ public class BookService {
         List<Author> authors = authorRepository.findAuthorByBooksId(bookId);
         return authors;
     }
+    public Book updateBook(Long id, Book bookRequest) {
+        Book book = bookRepository.findById(id).orElse(null);
+        if (book == null){
+            return null;
+        }
+        book.setBookName(bookRequest.getBookName());
+        return book;
+    }
 }
