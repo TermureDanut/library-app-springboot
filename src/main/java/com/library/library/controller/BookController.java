@@ -69,5 +69,12 @@ public class BookController {
         List<Author> authors = bookService.getAllAuthorsByBookId(bookId);
         return new ResponseEntity<>(authors, HttpStatus.OK);
     }
-
+    @PutMapping("/books/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable("id") long id, @RequestBody Book bookRequest) {
+        Book book = bookService.updateBook(id, bookRequest);
+        if (book == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(bookRepository.save(book), HttpStatus.OK);
+    }
 }
