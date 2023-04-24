@@ -1,6 +1,7 @@
 package com.library.library.controller;
 
 import com.library.library.model.User;
+import com.library.library.service.UserService;
 import com.library.library.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,52 +17,55 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserController {
     @Autowired
-    UserRepository userRepository;
+    private UserService userService;
+
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User u){
-        User user1 = userRepository.save(new User(u.getName(), u.getEmail()));
-        return new ResponseEntity<>(user1, HttpStatus.CREATED);
+    public ResponseEntity<User> createUser(@RequestBody User user){
+        User createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
+        List<User> users = userService.getAllUsers();
         if (users.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") long id){
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = Optional.ofNullable(userService.getUserById(id));
         if (!user.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(user.get(), HttpStatus.OK);
     }
+
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user1){
-        Optional<User> user = userRepository.findById(id);
-        if (!user.isPresent()){
+    public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user){
+        Optional<User> userToUpdate = Optional.ofNullable(userService.getUserById(id));
+        if (!userToUpdate.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        User u1 = user.get();
-        u1.setName(user1.getName());
-        u1.setEmail(user1.getEmail());
-        return new ResponseEntity<>(userRepository.save(u1), HttpStatus.OK);
+        User updatedUser = userService.updateUser(userToUpdate.get().getId(), user);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
+
     @DeleteMapping("/users")
     public ResponseEntity<HttpStatus> deleteAllUsers(){
-        userRepository.deleteAll();
+        userService.deleteAllUsers();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping("/users/{id}")
     public ResponseEntity<HttpStatus> deleteUserById(@PathVariable("id") long id){
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = Optional.ofNullable(userService.getUserById(id));
         if (!user.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        userRepository.deleteById(id);
+        userService.deleteUserById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

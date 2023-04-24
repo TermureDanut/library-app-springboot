@@ -1,5 +1,6 @@
 package com.library.library.controller;
 
+import com.library.library.service.AuthorService;
 import com.library.library.model.Author;
 import com.library.library.model.User;
 import com.library.library.repository.AuthorRepository;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,60 +17,67 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class AuthorController {
+
     @Autowired
-    private UserRepository userRepository;
+    private AuthorService authorService;
     @Autowired
-    private AuthorRepository authorRepository;
+    private UserController userService;
+
     @PostMapping("/users/{userId}/authors")
     public ResponseEntity<Author> createAuthor(@PathVariable(value = "userId") Long userId, @RequestBody Author authorRequest) {
-        User user = userRepository.findById(userId)
-                .orElse(null);
-        Author a;
-        if (user == null) {
+        Optional<User> user = Optional.ofNullable(userService.getUserById(userId).getBody());
+        if (!user.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            authorRequest.setUser(user);
-            a = authorRepository.save(authorRequest);
         }
-        return new ResponseEntity<>(a, HttpStatus.CREATED);
+        Author author = authorService.createAuthor(userId, authorRequest);
+        return new ResponseEntity<>(author, HttpStatus.CREATED);
     }
+
     @GetMapping("/authors/{id}")
     public ResponseEntity<Author> getAuthorsById(@PathVariable(value = "id") Long id) {
-        Optional<Author> a = authorRepository.findById(id);
-        if (!a.isPresent()){
+        Author author = authorService.getAuthorById(id);
+        if (author == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(a.get(), HttpStatus.OK);
+        return new ResponseEntity<>(author, HttpStatus.OK);
     }
+
     @GetMapping("/users/{userId}/authors")
     public ResponseEntity<List<Author>> getAllAuthorsByUserId(@PathVariable(value = "userId") Long userId) {
-        if (!userRepository.existsById(userId)) {
+        Optional<User> user = Optional.ofNullable(userService.getUserById(userId).getBody());
+        if (!user.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Author> authors = authorRepository.findByUserId(userId);
+        List<Author> authors = authorService.getAllAuthorsByUserId(userId);
         return new ResponseEntity<>(authors, HttpStatus.OK);
     }
-    @PutMapping("/author/{id}")
+
+    @PutMapping("/authors/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable("id") long id, @RequestBody Author authorRequest) {
-        Optional<Author> a = authorRepository.findById(id);
-        if (!a.isPresent()){
+        Author author = authorService.updateAuthor(id, authorRequest);
+        if (author == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Author a1 = a.get();
-        a1.setFullName(authorRequest.getFullName());
-        return new ResponseEntity<>(authorRepository.save(a1), HttpStatus.OK);
+        return new ResponseEntity<>(author, HttpStatus.OK);
     }
+
     @DeleteMapping("/authors/{id}")
-    public ResponseEntity<HttpStatus> deleteAuthor(@PathVariable("id") long id) {
-        authorRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    @DeleteMapping("/users/{userId}/authors")
-    public ResponseEntity<List<Author>> deleteAllAuthorsOfUser(@PathVariable(value = "userId") Long userId) {
-        if (!userRepository.existsById(userId)) {
+    public ResponseEntity<Void> deleteAuthor(@PathVariable("id") long id) {
+        Author author = authorService.getAuthorById(id);
+        if (author == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        authorRepository.deleteByUserId(userId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        authorService.deleteAuthor(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/users/{userId}/authors")
+    public ResponseEntity<Void> deleteAllAuthorsOfUser(@PathVariable(value = "userId") Long userId) {
+        Optional<User> user = Optional.ofNullable(userService.getUserById(userId).getBody());
+        if (!user.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        authorService.deleteAllAuthorsOfUser(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
