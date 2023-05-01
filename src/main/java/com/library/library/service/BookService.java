@@ -55,6 +55,13 @@ public class BookService {
         }
         return books;
     }
+    public List<Book> getBooksByBookName(String bookName) {
+        List<Book> books = bookRepository.findBookByBookName(bookName);
+        if (books.isEmpty()) {
+            return null;
+        }
+        return books;
+    }
     public List<Book> getAllBooksByAuthorId(Long authorId){
         if (!authorRepository.existsById(authorId)) {
             return null;
