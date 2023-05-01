@@ -37,7 +37,7 @@ public class UserController {
         if (users.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.FOUND);
     }
 
     @GetMapping("/users/{id}")
@@ -46,7 +46,23 @@ public class UserController {
         if (!user.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        return new ResponseEntity<>(user.get(), HttpStatus.FOUND);
+    }
+    @GetMapping("/users/getByName/{name}")
+    public ResponseEntity<List<User>> getUserByName(@PathVariable("name") String name){
+        List<User> users = userService.getUserByName(name);
+        if (users == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(users, HttpStatus.FOUND);
+    }
+    @GetMapping("/users/getByEmail/{email}")
+    public ResponseEntity<List<User>> getUserByEmail(@PathVariable("email") String email){
+        List<User> users = userService.getUserByEmail(email);
+        if (users == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(users, HttpStatus.FOUND);
     }
 
     @PutMapping("/users/{id}")
