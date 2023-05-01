@@ -30,7 +30,22 @@ public class UserService {
         Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
     }
-
+    public List<User> getUserByName(String name) {
+        List<User> users = userRepository.findByName(name);
+        if (users.isEmpty()) {
+            return null;
+        }else {
+            return users;
+        }
+    }
+    public List<User> getUserByEmail(String email) {
+        List<User> users = userRepository.findByEmail(email);
+        if (users.isEmpty()) {
+            return null;
+        }else {
+            return users;
+        }
+    }
     public User updateUser(long id, User user1) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
