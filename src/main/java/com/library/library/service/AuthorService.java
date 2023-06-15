@@ -34,9 +34,9 @@ public class AuthorService {
         }
         return author.get();
     }
-    public List<Author> getAuthorByFullName(String name) {
-        List<Author> authors = authorRepository.findAuthorByFullName(name);
-        if (authors.isEmpty()) {
+    public Author getAuthorByFullName(String name) {
+        Author authors = authorRepository.findAuthorByFullName(name);
+        if (authors == null) {
             return null;
         }
         return authors;

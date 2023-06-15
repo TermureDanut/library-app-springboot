@@ -42,8 +42,8 @@ public class AuthorController {
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
     @GetMapping("/authors/getByFullName/{fullName}")
-    public ResponseEntity<List<Author>> getAuthorsByFullName(@PathVariable(value = "fullName") String fullName) {
-        List<Author> authors = authorService.getAuthorByFullName(fullName);
+    public ResponseEntity<Author> getAuthorsByFullName(@PathVariable(value = "fullName") String fullName) {
+        Author authors = authorService.getAuthorByFullName(fullName);
         if (authors == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

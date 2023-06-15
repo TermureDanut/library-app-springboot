@@ -59,6 +59,14 @@ public class BookController {
         }
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
+    @GetMapping("/authors/authorName/{name}/books")
+    public ResponseEntity<List<Book>> getAllBooksByAuthorName(@PathVariable(value = "name") String name) {
+        List<Book> books = bookService.getAllBooksByAuthorName(name);
+        if (books.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
     @GetMapping("/books/{id}")
     public ResponseEntity<Book> getBooksById(@PathVariable(value = "id") Long id) {
         Book book = bookService.getBooksById(id);

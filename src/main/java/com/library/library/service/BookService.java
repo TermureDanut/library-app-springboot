@@ -69,6 +69,14 @@ public class BookService {
         List<Book> books = bookRepository.findBookByAuthorsId(authorId);
         return books;
     }
+    public List<Book> getAllBooksByAuthorName(String name){
+        Author a = authorRepository.findAuthorByFullName(name);
+        if (a == null) {
+            return null;
+        }
+        List<Book> books = bookRepository.findBookByAuthorsId(a.getId());
+        return books;
+    }
     public Book getBooksById(Long id) {
         Book book = bookRepository.findById(id).orElse(null);
         if (book == null){

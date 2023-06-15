@@ -1,6 +1,7 @@
 package com.library.library;
 
 import com.library.library.model.Author;
+import com.library.library.model.Book;
 import com.library.library.model.User;
 import com.library.library.repository.AuthorRepository;
 import com.library.library.repository.UserRepository;
@@ -12,12 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -59,6 +57,25 @@ public class AuthorServiceTests {
         assertEquals(authorId, result.getId());
         assertEquals("ion", result.getFullName());
     }
+    @Test
+    public void testGetAuthorByFullName() {
+        List<Author> authors = new ArrayList<>();
+        authors.add(new Author("John Doe"));
+        authors.add(new Author("Jane Smith"));
+
+        when(authorRepository.findAuthorByFullName("John Doe")).thenReturn(authors);
+        List<Author> result = authorService.getAuthorByFullName("John Doe");
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("John Doe", result.get(0).getFullName());
+
+        verify(authorRepository, times(1)).findAuthorByFullName("John Doe");
+
+        when(authorRepository.findAuthorByFullName("Nonexistent Author")).thenReturn(new ArrayList<>());
+        List<Author> emptyResult = authorService.getAuthorByFullName("Nonexistent Author");
+        assertNull(emptyResult);
+    }
+
     @Test
     public void testGetAllAuthorsByUserId() {
         Long userId = 1L;
