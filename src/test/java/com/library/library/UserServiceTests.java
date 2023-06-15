@@ -53,6 +53,24 @@ public class UserServiceTests {
         assertEquals(user, retrievedUser);
     }
     @Test
+    public void testGetUserByName() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("ion", "ion"));
+        userList.add(new User("ion", "ion"));
+        when(userRepository.findByName("ion")).thenReturn(userList);
+        List<User> retrievedUsers = userService.getUserByName("ion");
+        assertEquals(userList, retrievedUsers);
+    }
+    @Test
+    public void testGetUserByEmail() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("ion", "ion"));
+        userList.add(new User("ion", "ion"));
+        when(userRepository.findByName("ion")).thenReturn(userList);
+        List<User> retrievedUsers = userService.getUserByName("ion");
+        assertEquals(userList, retrievedUsers);
+    }
+    @Test
     public void testUpdateUser() {
         long userId = 1L;
         User user = new User("ion", "ion");

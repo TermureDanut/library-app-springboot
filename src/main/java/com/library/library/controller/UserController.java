@@ -3,9 +3,11 @@ package com.library.library.controller;
 import com.library.library.model.User;
 import com.library.library.service.UserService;
 import com.library.library.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,9 +22,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User createdUser = userService.createUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else {
+            User createdUser = userService.createUser(user);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/users")
@@ -31,7 +37,7 @@ public class UserController {
         if (users.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.FOUND);
     }
 
     @GetMapping("/users/{id}")
@@ -40,7 +46,23 @@ public class UserController {
         if (!user.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        return new ResponseEntity<>(user.get(), HttpStatus.FOUND);
+    }
+    @GetMapping("/users/getByName/{name}")
+    public ResponseEntity<List<User>> getUserByName(@PathVariable("name") String name){
+        List<User> users = userService.getUserByName(name);
+        if (users == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(users, HttpStatus.FOUND);
+    }
+    @GetMapping("/users/getByEmail/{email}")
+    public ResponseEntity<List<User>> getUserByEmail(@PathVariable("email") String email){
+        List<User> users = userService.getUserByEmail(email);
+        if (users == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(users, HttpStatus.FOUND);
     }
 
     @PutMapping("/users/{id}")

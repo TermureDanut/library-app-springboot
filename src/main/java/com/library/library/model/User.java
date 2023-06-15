@@ -1,6 +1,7 @@
 package com.library.library.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 
@@ -10,8 +11,13 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
     private long id;
+    @NotEmpty
+    @Size(min = 2, max = 50)
+    @Pattern(regexp = "^[A-Z][a-zA-Z ]*$")
     @Column
     private String name;
+    @NotBlank
+    @Email
     @Column
     private String email;
     public User(){}

@@ -55,11 +55,26 @@ public class BookService {
         }
         return books;
     }
+    public List<Book> getBooksByBookName(String bookName) {
+        List<Book> books = bookRepository.findBookByBookName(bookName);
+        if (books.isEmpty()) {
+            return null;
+        }
+        return books;
+    }
     public List<Book> getAllBooksByAuthorId(Long authorId){
         if (!authorRepository.existsById(authorId)) {
             return null;
         }
         List<Book> books = bookRepository.findBookByAuthorsId(authorId);
+        return books;
+    }
+    public List<Book> getAllBooksByAuthorName(String name){
+        Author a = authorRepository.findAuthorByFullName(name);
+        if (a == null) {
+            return null;
+        }
+        List<Book> books = bookRepository.findBookByAuthorsId(a.getId());
         return books;
     }
     public Book getBooksById(Long id) {

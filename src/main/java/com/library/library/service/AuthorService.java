@@ -34,6 +34,29 @@ public class AuthorService {
         }
         return author.get();
     }
+    public Author getAuthorByFullName(String name) {
+        Author authors = authorRepository.findAuthorByFullName(name);
+        if (authors == null) {
+            return null;
+        }
+        return authors;
+    }
+    public Author getAuthorWithMostBooks(){
+        List<Author> authors = authorRepository.findAll();
+        if (authors.isEmpty()){
+            return null;
+        }
+        Author aux = new Author();
+        int max = 0;
+        for (Author a : authors){
+            if (a.getBooks().size() > max){
+                max = a.getBooks().size();
+                aux = a;
+            }
+        }
+        return aux;
+    }
+
 
     public List<Author> getAllAuthorsByUserId(Long userId) {
         if (!userRepository.existsById(userId)) {

@@ -42,6 +42,14 @@ public class BookController {
         }
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
+    @GetMapping("/getByBookName/{bookName}")
+    public ResponseEntity<List<Book>> getBookByBookName(@PathVariable(value = "bookName") String bookName) {
+        List<Book> books = bookService.getBooksByBookName(bookName);
+        if (books == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
 
     @GetMapping("/authors/{authorId}/books")
     public ResponseEntity<List<Book>> getAllBooksByAuthorId(@PathVariable(value = "authorId") Long authorId) {
@@ -51,7 +59,14 @@ public class BookController {
         }
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
-
+    @GetMapping("/authors/authorName/{name}/books")
+    public ResponseEntity<List<Book>> getAllBooksByAuthorName(@PathVariable(value = "name") String name) {
+        List<Book> books = bookService.getAllBooksByAuthorName(name);
+        if (books.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
     @GetMapping("/books/{id}")
     public ResponseEntity<Book> getBooksById(@PathVariable(value = "id") Long id) {
         Book book = bookService.getBooksById(id);
@@ -60,7 +75,6 @@ public class BookController {
         }
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
-
     @GetMapping("/books/{bookId}/authors")
     public ResponseEntity<List<Author>> getAllAuthorsByBookId(@PathVariable(value = "bookId") Long bookId) {
         if (!bookRepository.existsById(bookId)) {

@@ -41,6 +41,22 @@ public class AuthorController {
         }
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
+    @GetMapping("/authors/getByFullName/{fullName}")
+    public ResponseEntity<Author> getAuthorsByFullName(@PathVariable(value = "fullName") String fullName) {
+        Author authors = authorService.getAuthorByFullName(fullName);
+        if (authors == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(authors, HttpStatus.OK);
+    }
+    @GetMapping("/authors/authorWithMostBooks")
+    public ResponseEntity<Author> getAuthorWithMostBooks(){
+        Author a = authorService.getAuthorWithMostBooks();
+        if (a == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(a, HttpStatus.OK);
+    }
 
     @GetMapping("/users/{userId}/authors")
     public ResponseEntity<List<Author>> getAllAuthorsByUserId(@PathVariable(value = "userId") Long userId) {
